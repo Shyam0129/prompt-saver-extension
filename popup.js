@@ -10,65 +10,81 @@ document.addEventListener('DOMContentLoaded', () => {
   function render(prompts) {
     listEl.innerHTML = '';
     if (!prompts || prompts.length === 0) {
-      listEl.innerHTML = '<div class="small">No prompts saved yet.</div>';
+      listEl.innerHTML = '<div class="empty">No prompts saved yet.</div>';
       return;
     }
+    
     prompts.forEach((p, idx) => {
-      const item = document.createElement('div');
-      item.className = 'item';
+        const item = document.createElement('div');
+        item.className = 'item';
+        
+        const textWrap = document.createElement('div');
+        textWrap.style.flex = '1';
+        textWrap.style.cursor = 'pointer';
+        
+        // Add click handler for redirect
+        textWrap.addEventListener('click', () => {
+            if (p.url) {
+                chrome.tabs.create({ url: p.url });
+            }
+        });
 
-      const textWrap = document.createElement('div');
-      textWrap.style.flex = '1';
-      const txt = document.createElement('div');
-      txt.className = 'text';
-      txt.textContent = p.text;
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      meta.textContent = `${p.site || 'local'} — ${fmtTime(p.ts)}`;
+        const txt = document.createElement('div');
+        txt.className = 'text';
+        txt.textContent = p.text;
+        
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.innerHTML = `
+            <span>${p.site || 'local'}</span>
+            <span>•</span>
+            <span>${fmtTime(p.ts)}</span>
+            ${p.url ? '<span class="link-icon">🔗</span>' : ''}
+        `;
 
-      textWrap.appendChild(txt);
-      textWrap.appendChild(meta);
+        textWrap.appendChild(txt);
+        textWrap.appendChild(meta);
 
-      const actions = document.createElement('div');
-      actions.className = 'actions';
-      // Insert button
-      const insertBtn = document.createElement('button');
-      insertBtn.className = 'action';
-      insertBtn.textContent = 'Insert';
-      insertBtn.title = 'Insert into the active chat input';
-      insertBtn.addEventListener('click', () => insertIntoActiveTab(p.text));
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+        // Insert button
+        const insertBtn = document.createElement('button');
+        insertBtn.className = 'action';
+        insertBtn.textContent = 'Insert';
+        insertBtn.title = 'Insert into the active chat input';
+        insertBtn.addEventListener('click', () => insertIntoActiveTab(p.text));
 
-      // Copy button
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'ghost';
-      copyBtn.textContent = 'Copy';
-      copyBtn.title = 'Copy to clipboard';
-      copyBtn.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(p.text);
-          copyBtn.textContent = 'Copied';
-          setTimeout(() => (copyBtn.textContent = 'Copy'), 900);
-        } catch (err) {
-          console.error('Clipboard failed', err);
-          alert('Copy failed. Try selecting text manually.');
-        }
-      });
+        // Copy button
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'ghost';
+        copyBtn.textContent = 'Copy';
+        copyBtn.title = 'Copy to clipboard';
+        copyBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(p.text);
+            copyBtn.textContent = 'Copied';
+            setTimeout(() => (copyBtn.textContent = 'Copy'), 900);
+          } catch (err) {
+            console.error('Clipboard failed', err);
+            alert('Copy failed. Try selecting text manually.');
+          }
+        });
 
-      // Delete button
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'ghost';
-      deleteBtn.textContent = 'Delete';
-      deleteBtn.addEventListener('click', () => {
-        deletePrompt(idx);
-      });
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'ghost';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => {
+          deletePrompt(idx);
+        });
 
-      actions.appendChild(insertBtn);
-      actions.appendChild(copyBtn);
-      actions.appendChild(deleteBtn);
+        actions.appendChild(insertBtn);
+        actions.appendChild(copyBtn);
+        actions.appendChild(deleteBtn);
 
-      item.appendChild(textWrap);
-      item.appendChild(actions);
-      listEl.appendChild(item);
+        item.appendChild(textWrap);
+        item.appendChild(actions);
+        listEl.appendChild(item);
     });
   }
 

@@ -43,7 +43,8 @@ function savePrompt(promptText) {
         prompts.unshift({
             text: promptText,
             timestamp: new Date().toISOString(),
-            site: window.location.hostname
+            site: window.location.hostname,
+            url: window.location.href  // Save the full URL
         });
         
         // Maintain size limit
