@@ -1,0 +1,22 @@
+/* popup.css */
+:root {
+  --bg: #fff;
+  --muted: #666;
+  --accent: #0b84ff;
+}
+
+html,body{ margin:0;padding:0;font-family:system-ui,Segoe UI,Roboto,Arial; width:360px; height:480px; color:#111; background:var(--bg); }
+.container { padding:8px; display:flex; flex-direction:column; height:100%; }
+header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+h1 { font-size:14px; margin:0; }
+#clearAll { background:transparent;border:1px solid #ddd;padding:4px 8px;border-radius:6px; cursor:pointer; }
+.controls { margin-top:8px; }
+#search { width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; }
+main { margin-top:8px; overflow:auto; flex:1; }
+.item { display:flex; align-items:flex-start; gap:8px; padding:8px; border-radius:8px; border-bottom:1px solid #f1f1f1; }
+.text { flex:1; font-size:13px; white-space:pre-wrap; word-break:break-word; }
+.meta { font-size:11px; color:var(--muted); margin-top:6px; }
+.actions { display:flex; flex-direction:column; gap:6px; }
+button.action { border: none; background: var(--accent); color: white; padding:6px 8px; border-radius:6px; cursor:pointer; font-size:12px; }
+button.ghost { background:transparent;border:1px solid #ddd;color:#333;padding:6px 8px;border-radius:6px; cursor:pointer; font-size:12px; }
+.small { font-size:11px; color:var(--muted); }
